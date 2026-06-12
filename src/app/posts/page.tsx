@@ -102,8 +102,8 @@ export default function PostManagement() {
 
       const response = await api.get("/posts", { params });
       setPosts(response.data.data || []);
-      setTotalPage(response.data.totalPage || 1);
-      setCurrentPage(response.data.currentPage || 1);
+      setTotalPage(response.data.pagination.totalPage || 1);
+      setCurrentPage(response.data.pagination.currentPage || 1);
     } catch (err) {
       console.error("Lỗi khi lấy danh sách tin:", err);
     } finally {
@@ -231,7 +231,7 @@ export default function PostManagement() {
         }}
       >
         <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
-          Quản lý tin đăng ({posts.length})
+          Quản lý tin đăng 
         </Typography>
         {/* Search + Filter */}
         <Box display="flex" flexWrap="wrap" gap={2} mb={2}>
