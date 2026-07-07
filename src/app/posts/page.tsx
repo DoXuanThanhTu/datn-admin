@@ -146,6 +146,19 @@ export default function PostManagement() {
   const handleApprove = async (id: string) => {
     try {
       await api.post(`/posts/admin/${id}/approve`);
+
+      // Gửi thông báo cho người bán
+      const post = posts.find((p) => p._id === id) || selectedPost;
+      if (post?.seller?._id) {
+        await api.post("/notifications", {
+          receiver: post.seller._id,
+          type: "SYSTEM",
+          title: "Tin đăng đã được duyệt",
+          content: `Tin đăng "${post.title}" của bạn đã được duyệt và hiển thị trên hệ thống.`,
+          link: `/post/${post._id}`,
+        });
+      }
+
       fetchPosts(currentPage);
       setOpenDetail(false);
       alert("Đã duyệt tin!");
@@ -157,6 +170,18 @@ export default function PostManagement() {
   const handleHide = async (id: string, reasonText: string) => {
     try {
       await api.post(`/posts/admin/${id}/hide`, { reason: reasonText });
+
+      const post = posts.find((p) => p._id === id) || selectedPost;
+      if (post?.seller?._id) {
+        await api.post("/notifications", {
+          receiver: post.seller._id,
+          type: "SYSTEM",
+          title: "Tin đăng đã bị ẩn",
+          content: `Tin đăng "${post.title}" đã bị ẩn khỏi hệ thống. Lý do: ${reasonText}`,
+          link: `/post/${post._id}`,
+        });
+      }
+
       fetchPosts(currentPage);
       setOpenDetail(false);
       setOpenReason(false);
@@ -170,6 +195,18 @@ export default function PostManagement() {
   const handleReject = async (id: string, reasonText: string) => {
     try {
       await api.post(`/posts/admin/${id}/reject`, { reason: reasonText });
+
+      const post = posts.find((p) => p._id === id) || selectedPost;
+      if (post?.seller?._id) {
+        await api.post("/notifications", {
+          receiver: post.seller._id,
+          type: "SYSTEM",
+          title: "Tin đăng bị từ chối",
+          content: `Tin đăng "${post.title}" bị từ chối duyệt. Lý do: ${reasonText}`,
+          link: `/post/edit/${post._id}`,
+        });
+      }
+
       fetchPosts(currentPage);
       setOpenDetail(false);
       setOpenReason(false);
@@ -184,6 +221,18 @@ export default function PostManagement() {
     if (!confirm("Bạn có muốn hiển thị lại tin đăng này?")) return;
     try {
       await api.post(`/posts/admin/${id}/approve`);
+
+      const post = posts.find((p) => p._id === id) || selectedPost;
+      if (post?.seller?._id) {
+        await api.post("/notifications", {
+          receiver: post.seller._id,
+          type: "SYSTEM",
+          title: "Tin đăng đã hiển thị lại",
+          content: `Tin đăng "${post.title}" của bạn đã được hiển thị lại trên hệ thống.`,
+          link: `/post/${post._id}`,
+        });
+      }
+
       fetchPosts(currentPage);
       setOpenDetail(false);
       alert("Đã hiển thị lại tin!");
@@ -196,7 +245,20 @@ export default function PostManagement() {
   const handleDelete = async (id: string) => {
     if (!confirm("Bạn có chắc muốn xóa tin này?")) return;
     try {
-      await api.delete(`/posts/${id}`);
+      const post = posts.find((p) => p._id === id) || selectedPost;
+
+      // Gửi thông báo trước khi xóa
+      if (post?.seller?._id) {
+        await api.post("/notifications", {
+          receiver: post.seller._id,
+          type: "SYSTEM",
+          title: "Tin đăng đã bị gỡ bỏ",
+          content: `Tin đăng "${post.title}" của bạn đã bị quản trị viên gỡ bỏ khỏi hệ thống.`,
+          link: `/profile/posts`,
+        });
+      }
+
+      await api.delete(`/posts/admin/${id}`);
       fetchPosts(currentPage);
       setOpenDetail(false);
       alert("Đã xóa tin!");
@@ -231,7 +293,7 @@ export default function PostManagement() {
         }}
       >
         <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
-          Quản lý tin đăng 
+          Quản lý tin đăng
         </Typography>
         {/* Search + Filter */}
         <Box display="flex" flexWrap="wrap" gap={2} mb={2}>
