@@ -51,7 +51,7 @@ interface Post {
   priceNegotiable?: boolean;
   images: string[];
   seller: Seller;
-  status: "pending" | "active" | "hidden" | "rejected";
+  status: "pending" | "active" | "hidden" | "rejected" | "sold";
   views: number;
   createdAt: string;
   description: string;
@@ -386,14 +386,22 @@ export default function PostManagement() {
                             ? "Chờ duyệt"
                             : post.status === "active"
                               ? "Đang hiển thị"
-                              : "Đã ẩn"
+                              : post.status === "sold"
+                                ? "Đã bán"
+                                : post.status === "rejected"
+                                  ? "Từ chối"
+                                  : "Đã ẩn"
                         }
                         color={
                           post.status === "active"
                             ? "success"
                             : post.status === "pending"
                               ? "warning"
-                              : "default"
+                              : post.status === "sold"
+                                ? "info"
+                                : post.status === "rejected"
+                                  ? "error"
+                                  : "default"
                         }
                         size="small"
                       />

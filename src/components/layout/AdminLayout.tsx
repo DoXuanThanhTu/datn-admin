@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import PeopleIcon from "@mui/icons-material/People";
+import CategoryIcon from "@mui/icons-material/Category";
 
 const drawerWidth = 240;
 
@@ -46,6 +47,11 @@ export default function AdminLayout({
       icon: <PeopleIcon />,
       href: "/users",
     },
+    {
+      text: "Quản lý danh mục",
+      icon: <CategoryIcon />,
+      href: "/categories",
+    },
   ];
 
   return (
@@ -55,9 +61,7 @@ export default function AdminLayout({
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
-          <Typography variant="h6">
-            Admin Đồ Cũ Market
-          </Typography>
+          <Typography variant="h6">Admin Đồ Cũ Market</Typography>
         </Toolbar>
       </AppBar>
 
@@ -85,7 +89,9 @@ export default function AdminLayout({
                   sx={{
                     bgcolor: active ? "#e3f2fd" : "transparent",
                     color: active ? "#1976d2" : "inherit",
-                    borderRight: active ? "4px solid #1976d2" : "4px solid transparent",
+                    borderRight: active
+                      ? "4px solid #1976d2"
+                      : "4px solid transparent",
 
                     "& .MuiListItemIcon-root": {
                       color: active ? "#1976d2" : "inherit",
@@ -122,17 +128,17 @@ export default function AdminLayout({
         {children}
       </Box>
       <ToastContainer
-              position="top-right"
-              autoClose={2000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="colored"
-            />
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </Box>
   );
 }
